@@ -17,7 +17,8 @@ app.use(bodyParser.urlencoded({ extended: false }));
 app.post("/signup", (req, res) => {
     var myData = new User(req.body);
     myData.save().then(function(){
-    res.send('fine');
+   res.send('fine');
+   
     }).catch(function(e){
     res.send(e)
     });
@@ -54,4 +55,4 @@ app.post("/productreg",(req,res) =>{
 
 
 
-app.listen(8000)
+app.listen(3000);

@@ -6,12 +6,17 @@ const User = mongoose.model('user', {
     lastname: {
         type: String
     },
-    mobile: {
-        type: String
-    },
     email: {
         type: String
     },
+    contact: {
+        type: String
+    },
+
+    username:{
+        type:String
+    },
+    
     password: {
         type: String
     }
