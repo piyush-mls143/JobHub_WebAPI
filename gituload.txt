@@ -1,6 +1,0 @@
-echo "# JobHub_WebAPI" >> README.md
-git init
-git add README.md
-git commit -m "first commit"
-git remote add origin https://github.com/piyush-mls143/JobHub_WebAPI.git
-git push -u origin master
