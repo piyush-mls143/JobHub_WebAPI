@@ -4,7 +4,8 @@ const app = express();
 const bodyParser = require('body-parser');
 require('./db/mongoos');
 const Users = require('./models/userAuthModel');
-const Product = require('./models/product');
+const Jobs = require('./models/jobs');
+const Reports=require('./models/reports');
 
 //const UserInfo = require('./models/userinfo');
 
@@ -40,6 +41,8 @@ app.get('/users/me', auth, function (req, res) {
     res.send(req.user);
    
 })
+
+
 app.post("/login", async function (req, res) {
 
     const user = await Users.checkCrediantialsDb(req.body.username, req.body.password);
@@ -61,19 +64,53 @@ app.post("/signup", (req, res) => {
 
 
 });
-app.post('/addproduct', auth, function (req, res) {
-    console.log(req.body);
+app.post('/addjobs',function (req, res) {
+   var post=req.body.post;
+   var companyname=req.body.companyname;
+   var experience=req.body.experience;
+   var description=req.body.description;
+   var userId=req.body.userId;
+   console.log(req.body);
 
-    const productData = new Product({ ...req.body, userId: req.user._id });
-    console.log(productData);
-
-    productData.save().then(function () {
-        res.json('fine');
-        
-    }).catch(function (e) {
-        res.send(e)
-    })
+   var JobData=new Jobs({
+    post:post,
+    companyname:companyname,
+    experience:experience,
+    description:description,
+    userId:userId
+   })
+   JobData.save().then(function(){
+       res.json({msg: "Job_added"})
+   })
+   .catch(function(e){
+       res.send(e);
+   })
 })
+
+
+
+
+app.post('/addreports',function (req, res) {
+    var reporttitle=req.body.reporttitle;
+    var report=req.body.report;
+    var userId=req.body.userId;
+    console.log(req.body);
+ 
+    var ReportData=new Reports({
+        reporttitle:reporttitle,
+        report:report,
+     userId:userId
+    })
+    ReportData.save().then(function(){
+        res.json({msg: "Report_added"})
+    })
+    .catch(function(e){
+        res.send(e);
+    })
+ })
+
+
+
 
 
 // function generateToken(){
