@@ -113,6 +113,20 @@ app.post('/addreports',function (req, res) {
 
 
 
+ app.get('/get-job', function(req,res){
+     var mysort = {_id: -1};
+     Jobs.find()
+     .sort(mysort).then(function(job){
+         res.send(job);
+     }).catch(function(e){
+         res.send(e);
+     })
+ })
+
+
+
+
+
 // function generateToken(){
 //     const token =jwt.sign({_id:"userid"},"mysecretwordsd");
 //     console.log(token);
