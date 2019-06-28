@@ -13,6 +13,12 @@ const Jobschema=new mongoose.Schema({
     description: {
         type: String
     },
+    email: {
+        type: String
+    },
+    contact: {
+        type: String
+    },
     userId: {
         type: String
     }

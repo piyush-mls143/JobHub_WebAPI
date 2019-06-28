@@ -61,14 +61,18 @@ app.post("/signup", (req, res) => {
     }).catch(function (e) {
         res.send(e)
     });
-
-
 });
+
+
+
+
 app.post('/addjobs',function (req, res) {
    var post=req.body.post;
    var companyname=req.body.companyname;
    var experience=req.body.experience;
    var description=req.body.description;
+   var email=req.body.email;
+   var contact=req.body.contact;
    var userId=req.body.userId;
    console.log(req.body);
 
@@ -77,6 +81,8 @@ app.post('/addjobs',function (req, res) {
     companyname:companyname,
     experience:experience,
     description:description,
+    email:email,
+    contact:contact,
     userId:userId
    })
    JobData.save().then(function(){
@@ -90,7 +96,21 @@ app.post('/addjobs',function (req, res) {
 
 
 
-app.post('/addreports',function (req, res) {
+
+ app.get('/get-job', function(req,res){
+     var mysort = {_id: -1};
+     Jobs.find()
+     .sort(mysort).then(function(job){
+         res.send(job);
+     }).catch(function(e){
+         res.send(e);
+     })
+ })
+
+
+
+
+ app.post('/addreports',function (req, res) {
     var reporttitle=req.body.reporttitle;
     var report=req.body.report;
     var userId=req.body.userId;
@@ -111,14 +131,11 @@ app.post('/addreports',function (req, res) {
 
 
 
-
-
- app.get('/get-job', function(req,res){
-     var mysort = {_id: -1};
-     Jobs.find()
-     .sort(mysort).then(function(job){
-         res.send(job);
-     }).catch(function(e){
+ //delete vacancies
+ app.delete('/delete_jobs/:id', function (req,res){
+     Jobs.findByIdAndDelete(req.params.id).then(function (){
+         res.json({msg: "Jobs_deleted"})
+     }).catch(function (e){
          res.send(e);
      })
  })
