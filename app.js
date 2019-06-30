@@ -129,6 +129,17 @@ app.post('/addjobs',function (req, res) {
     })
  })
 
+//it is getmessage part
+ app.get('/getreport', function(req,res){
+    var mysort = {_id: -1};
+    Reports.find()
+    .sort(mysort).then(function(report){
+        res.send(report);
+    }).catch(function(e){
+        res.send(e);
+    })
+})
+
 
 
  //delete vacancies
