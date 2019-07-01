@@ -23,15 +23,16 @@ const userSchema= new mongoose.Schema({
     },
     lastname: {
         type: String
-    },
-    
+    }, 
     email:{
         type:String
     },
     contact:{
         type:Number
     },
-
+    usertype:{
+        type:String
+    },
     username: {
         type: String
     },
