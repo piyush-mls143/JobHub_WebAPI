@@ -1,23 +1,23 @@
 // const mongoose = require('mongoose');
 const express = require('express');
+const path = require('path');
+const multer = require('multer');
 const app = express();
 const bodyParser = require('body-parser');
 require('./db/mongoos');
 const Users = require('./models/userAuthModel');
 const Jobs = require('./models/jobs');
 const Reports = require('./models/reports');
-
-//const UserInfo = require('./models/userinfo');
-
-// const path = require('path');
-// const publicDirectry = path.join(__dirname, 'public')
-// const viewPath = path.join(__dirname, 'resources');
-// app.set('views', viewPath);
+const Notices= require('./models/notice');
 const cors = require('cors');
 const jwt = require('jsonwebtoken');
 const auth = require('./middleware/auth');
 app.use(cors());
 const middleware = require('./middleware/middleware');
+
+
+app.use(express.static('./images'))
+app.use(express.json());
 
 
 app.use(bodyParser.urlencoded({ extended: false }));
@@ -42,6 +42,50 @@ app.get('/users/me', auth, function (req, res) {
 
 })
 
+var storage = multer.diskStorage(
+    {
+        destination: "images",
+        filename: (req, file, callback) => {
+            let ext = path.extname(file.originalname);
+            callback(null, file.fieldname + "-" + Date.now() + ext);
+        }
+    });
+
+var imageFileFilter = (req, file, cb) => {
+    if
+        (!file.originalname.match(/\.(jpg|jpeg|png|gif)$/)) { return cb(newError("You can upload only image files!"), false); }
+    cb(null, true);
+};
+
+var upload = multer({
+    storage: storage,
+    fileFilter: imageFileFilter,
+    limits: {
+        fileSize: 1000000
+    }
+});
+
+
+
+
+var storage = multer.diskStorage({
+    destination: "images",
+    filename: function (req, file, callback)
+    {
+    const ext = path.extname(file.originalname);
+    callback(null, "ram" + Date.now() + ext);
+    }
+   
+    });
+
+    var upload = multer({ storage: storage });
+
+   
+
+
+
+
+
 
 app.post("/login", async function (req, res) {
 
@@ -54,7 +98,14 @@ app.get("/test99", auth, function (req, res) {
 
 })
 
+app.post('/upload', upload.single('upload'), (req, res) => {
+    res.send({ Filename: req.file.filename });
+    console.log(req.file.filename)
+})
+
+
 app.post("/signup", (req, res) => {
+    console.log("here")
     var myData = new Users(req.body);
     myData.save().then(function () {
         res.send('fine');
@@ -107,6 +158,28 @@ app.get('/get-job', function (req, res) {
         })
 })
 
+app.get('/get-job_id',auth, function (req, res) {
+    console.log(req.user._id)
+    Jobs.find({userId:req.user._id}).then(function (job) {
+        console.log(job)
+        res.send(job);
+    }).catch(function (e) {
+        res.send(e);
+    })
+
+
+    //var mysort = { _id: -1 };
+    // console.log(req.user._id)
+    // Jobs.findOne({userId:req.user._id})
+    //     .then(function (job) {
+    //         res.send(job);
+    //         console.log(job)
+    //     }).catch(function (e) {
+    //         res.send(e);
+    //     })
+
+})
+
 
 
 
@@ -155,10 +228,46 @@ app.delete('/delete_jobs/:id', function (req, res) {
 
 
 
-// function generateToken(){
-//     const token =jwt.sign({_id:"userid"},"mysecretwordsd");
-//     console.log(token);
-// }
-//generateTokens();
+
+
+app.post('/addnotices', function (req, res) {
+    var noticetitle = req.body.noticetitle;
+    var notice = req.body.notice;
+    
+    console.log(req.body);
+
+    var NoticeData = new Notices({
+        noticetitle: noticetitle,
+        notice: notice,
+      
+    })
+    NoticeData.save().then(function () {
+        res.json({ msg: "Notice_added" })
+    })
+        .catch(function (e) {
+            res.send(e);
+        })
+});
+
+
+
+
+
+
+
+
+
+
+
+app.post('/users/logoutAll', auth, async (req, res) => {
+    try {
+    req.user.tokens = []
+    await req.user.save()
+    res.send()
+    } catch (e) {
+    res.status(500).send()
+    }
+   })
+   
 
 app.listen(90);

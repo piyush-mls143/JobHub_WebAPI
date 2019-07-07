@@ -1,5 +1,5 @@
 const mongoose = require('mongoose');
-const jwt=require('jsonwebtoken');
+const jwt = require('jsonwebtoken');
 
 
 //initaila authentication model
@@ -17,21 +17,21 @@ const jwt=require('jsonwebtoken');
 //         type:String
 //     }
 // });
-const userSchema= new mongoose.Schema({
+const userSchema = new mongoose.Schema({
     firstname: {
         type: String
     },
     lastname: {
         type: String
-    }, 
-    email:{
-        type:String
     },
-    contact:{
-        type:Number
+    email: {
+        type: String
     },
-    usertype:{
-        type:String
+    contact: {
+        type: Number
+    },
+    usertype: {
+        type: String
     },
     username: {
         type: String
@@ -39,31 +39,34 @@ const userSchema= new mongoose.Schema({
     password: {
         type: String
     },
-  tokens:[{
-      token:{
-          type:String,
-          required:true
-      }
-  }]
+    imageName: {
+        type: String
+    },
+    tokens: [{
+        token: {
+            type: String,
+            required: true
+        }
+    }]
 });
 
 
 
-userSchema.statics.checkCrediantialsDb = async (user22, pass) =>{
+userSchema.statics.checkCrediantialsDb = async (user22, pass) => {
 
-    const user1 = await User.findOne({username : user22, password : pass})
-     return user1;
-    }
+    const user1 = await User.findOne({ username: user22, password: pass })
+    return user1;
+}
 
-    userSchema.methods.generateAuthToken = async function () {
-        const user = this
-       const token = jwt.sign({ _id: user._id.toString() }, 'thisismynewcourse')
-       
-       console.log(token);
-        user.tokens = user.tokens.concat({ token :token })
-        await user.save()
-        return token
-       }
+userSchema.methods.generateAuthToken = async function () {
+    const user = this
+    const token = jwt.sign({ _id: user._id.toString() }, 'thisismynewcourse')
+
+    console.log(token);
+    user.tokens = user.tokens.concat({ token: token })
+    await user.save()
+    return token
+}
 
 // userSchema.statics.myFirst = function(user,pass){
 
@@ -74,5 +77,5 @@ userSchema.statics.checkCrediantialsDb = async (user22, pass) =>{
 //     console.log(pass)
 // }
 //     }
-    const User=mongoose.model('User',userSchema);  
-    module.exports=User;
+const User = mongoose.model('User', userSchema);
+module.exports = User;
