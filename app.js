@@ -114,6 +114,16 @@ app.post("/signup", (req, res) => {
     });
 });
 
+app.get('/get_users', function (req, res) {
+    var mysort = { _id: -1 };
+    Users.find()
+        .sort(mysort).then(function (user) {
+            res.send(user);
+        }).catch(function (e) {
+            res.send(e);
+        })
+})
+
 
 
 
@@ -215,6 +225,17 @@ app.get('/getreport', function (req, res) {
 
 
 
+app.get('/getnotice', function (req, res) {
+    var mysort = { _id: -1 };
+    Notices.find()
+        .sort(mysort).then(function (notice) {
+            res.send(notice);
+        }).catch(function (e) {
+            res.send(e);
+        })
+})
+
+
 //delete vacancies
 app.delete('/delete_jobs/:id', function (req, res) {
     Jobs.findByIdAndDelete(req.params.id).then(function () {
@@ -224,6 +245,14 @@ app.delete('/delete_jobs/:id', function (req, res) {
     })
 })
 
+
+app.delete('/delete_user/:id', function (req, res) {
+    Users.findByIdAndDelete(req.params.id).then(function () {
+        res.json({ msg: "User_deleted" })
+    }).catch(function (e) {
+        res.send(e);
+    })
+})
 
 
 
@@ -248,15 +277,6 @@ app.post('/addnotices', function (req, res) {
             res.send(e);
         })
 });
-
-
-
-
-
-
-
-
-
 
 
 app.post('/users/logoutAll', auth, async (req, res) => {
