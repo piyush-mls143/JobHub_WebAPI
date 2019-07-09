@@ -90,7 +90,7 @@ app.post("/login", async function (req, res) {
 
     const user = await Users.checkCrediantialsDb(req.body.username, req.body.password);
     const token = await user.generateAuthToken();
-    res.send({ token: token, usertype: user.usertype });
+    res.send({ token: token, usertype: user.usertype, _id: user._id });
 })
 
 app.get("/test99", auth, function (req, res) {
