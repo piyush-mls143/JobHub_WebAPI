@@ -8,7 +8,7 @@ require('./db/mongoos');
 const Users = require('./models/userAuthModel');
 const Jobs = require('./models/jobs');
 const Reports = require('./models/reports');
-const Notices= require('./models/notice');
+const Notices = require('./models/notice');
 const cors = require('cors');
 const jwt = require('jsonwebtoken');
 const auth = require('./middleware/auth');
@@ -70,17 +70,16 @@ var upload = multer({
 
 var storage = multer.diskStorage({
     destination: "images",
-    filename: function (req, file, callback)
-    {
-    const ext = path.extname(file.originalname);
-    callback(null, "ram" + Date.now() + ext);
+    filename: function (req, file, callback) {
+        const ext = path.extname(file.originalname);
+        callback(null, "ram" + Date.now() + ext);
     }
-   
-    });
 
-    var upload = multer({ storage: storage });
+});
 
-   
+var upload = multer({ storage: storage });
+
+
 
 
 
@@ -168,9 +167,9 @@ app.get('/get-job', function (req, res) {
         })
 })
 
-app.get('/get-job_id',auth, function (req, res) {
+app.get('/get-job_id', auth, function (req, res) {
     console.log(req.user._id)
-    Jobs.find({userId:req.user._id}).then(function (job) {
+    Jobs.find({ userId: req.user._id }).then(function (job) {
         console.log(job)
         res.send(job);
     }).catch(function (e) {
@@ -255,6 +254,13 @@ app.delete('/delete_user/:id', function (req, res) {
 })
 
 
+app.put('/update_password', auth, function (req, res) {
+    Users.findByIdAndUpdate(req.user._id, req.body, { new: true }, function (params) {
+        res.send(true)
+    });
+})
+
+
 
 
 
@@ -262,13 +268,13 @@ app.delete('/delete_user/:id', function (req, res) {
 app.post('/addnotices', function (req, res) {
     var noticetitle = req.body.noticetitle;
     var notice = req.body.notice;
-    
+
     console.log(req.body);
 
     var NoticeData = new Notices({
         noticetitle: noticetitle,
         notice: notice,
-      
+
     })
     NoticeData.save().then(function () {
         res.json({ msg: "Notice_added" })
@@ -281,13 +287,13 @@ app.post('/addnotices', function (req, res) {
 
 app.post('/users/logoutAll', auth, async (req, res) => {
     try {
-    req.user.tokens = []
-    await req.user.save()
-    res.send()
+        req.user.tokens = []
+        await req.user.save()
+        res.send()
     } catch (e) {
-    res.status(500).send()
+        res.status(500).send()
     }
-   })
-   
+})
+
 
 app.listen(90);
